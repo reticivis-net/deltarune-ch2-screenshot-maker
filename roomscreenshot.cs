@@ -27,13 +27,13 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using UndertaleModLib;
-using UndertaleModLib.Models;
 
-using UndertaleModTool;
+
 string exportFolder = PromptChooseDirectory("Export room sizes to where");
 if (exportFolder == null)
 	throw new System.Exception("The export folder was not set.");
-using (StreamWriter writer = new StreamWriter(exportFolder + System.IO.Path.DirectorySeparatorChar + "roomsizes.csv"))  
+// resize all rooms to have the entire room in view
+using (StreamWriter writer = new StreamWriter(exportFolder + System.IO.Path.DirectorySeparatorChar + "roomsizes.csv"))
 {
 	for (int i = 0; i < Data.Rooms.Count; i++)
 	{
@@ -50,34 +50,23 @@ using (StreamWriter writer = new StreamWriter(exportFolder + System.IO.Path.Dire
 	}
 }
 
-int width = 1920;
-int height = 1080;
+// force the camera to be Big
+// if your monitor is a different ratio, make it that ratio! resolutions bigger than your monitor wont do anything.
+int width = 1920*4;
+int height = 1080*4;
 Data.Code.ByName("gml_Object_obj_initializer_Create_0").AppendGML($"surface_resize(application_surface, {width}, {height})", Data);
 Data.Code.ByName("gml_Object_obj_initializer2_Create_0").AppendGML($"surface_resize(application_surface, {width}, {height})", Data);
 Data.Code.ByName("gml_Object_obj_initializer_ch1_Create_0").AppendGML($"surface_resize(application_surface, {width}, {height})", Data);
 
-var code = Data.GameObjects.ByName("obj_time").EventHandlerFor(EventType.KeyPress, EventSubtypeKey.vk_f2, Data.Strings, Data.Code, Data.CodeLocals);
+// make player and party invisible
+Data.GameObjects.ByName("obj_mainchara").Visible = false;
+Data.GameObjects.ByName("obj_caterpillarchara").Visible = false;
 
+// f2 keybind to save screenshot and advance
+var code = Data.GameObjects.ByName("obj_time").EventHandlerFor(EventType.KeyPress, EventSubtypeKey.vk_f2, Data.Strings, Data.Code, Data.CodeLocals);
 code.ReplaceGML(@"
 screen_save(((working_directory + ""scs/"" + string(room) + ""_"" + room_get_name(room)) + ""_raw.png""))
 room_goto_next()
 ", Data);
 
-var code2 = Data.GameObjects.ByName("obj_time").EventHandlerFor(EventType.KeyPress, EventSubtypeKey.vk_f1, Data.Strings, Data.Code, Data.CodeLocals);
-
-code2.ReplaceGML(@"
-room_goto(room_first)
-", Data);
-
-/*code.ReplaceGML(@"
-var v_vals = room_get_viewport(room, 0)
-surface_resize(application_surface, v_vals[3], v_vals[4])
-screen_save(((working_directory + room_get_name(room)) + "".png""))
-var file = file_text_open_write(((working_directory + room_get_name(room)) + "".txt""))
-file_text_write_real(file, v_vals[3])
-file_text_writeln(file)
-file_text_write_real(file, v_vals[4])
-file_text_writeln(file)
-file_text_close(file)
-", Data);*/
 ChangeSelection(code);

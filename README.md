@@ -12,6 +12,7 @@ Steps to use
   - the game will appear distorted, it is being resized to use as much pixel data as it can.
   - this is configurable on line 53-54 of `roomscreenshot.cs`
 - jump to room 27 (with `YYToolkit` the keybind is `F3`)
+  - do NOT load a save. The code to make the characters (mostly) invisible breaks it. not sure why. just go to the debug room or the load menu and use `F3` to jump.
 - press `F2` to take a screenshot and advance to the next room
   - if a room is bugged, relaunch and skip over it with `F3`
   - screenshots will be saved to `C:\Users\[YOURUSERNAME]\AppData\Local\DELTARUNE\scs`

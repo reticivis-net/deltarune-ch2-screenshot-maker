@@ -8,5 +8,5 @@ with open("roomsizes.csv", "r") as f:
 for filename in os.listdir("scs"):
     print(filename)
     im = Image.open("scs/" + filename)
-    im.resize(roomsizes[int(filename.split("_")[0])], resample=Image.NEAREST).save(
+    im.resize(reversed(roomsizes[int(filename.split("_")[0])]), resample=Image.NEAREST).save(
         "out/" + filename.replace("_raw", ""))
